@@ -10,7 +10,7 @@
 <div align="center">
   <img src="https://img.shields.io/badge/Platform-macOS%20%7C%20Windows%20%7C%20Linux-blue?style=for-the-badge" alt="Platform">
   <img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="License">
-  <img src="https://img.shields.io/badge/Version-1.0.0-orange?style=for-the-badge" alt="Version">
+  <img src="https://img.shields.io/badge/Version-1.0.2-orange?style=for-the-badge" alt="Version">
   <img src="https://img.shields.io/badge/Node.js-18%2B-brightgreen?style=for-the-badge" alt="Node.js">
   <a href="https://github.com/mirzaaghazadeh/SlipStreamGUI/releases/latest">
     <img src="https://img.shields.io/github/v/release/mirzaaghazadeh/SlipStreamGUI?style=for-the-badge&label=Latest%20Release" alt="Latest Release">
@@ -127,6 +127,73 @@ bash <(curl -Ls https://raw.githubusercontent.com/AliRezaBeigy/slipstream-rust-d
 - 🔍 **Verbose Logging**: Optional detailed logging for debugging
 - 🧪 **Connection Testing**: Built-in proxy connection tester
 - 📊 **Real-Time Status**: Monitor VPN connection status at a glance
+
+---
+
+## 📱 Sharing PC Internet via Mobile (Same Network)
+
+If your PC and mobile device are on the same Wi-Fi network, you can configure your mobile device to use your PC's internet connection (including the VPN) through the proxy.
+
+### Prerequisites
+
+- PC and mobile device must be connected to the same Wi-Fi network
+- SlipStream GUI must be running with VPN started
+- Find your PC's local IP address (see instructions below)
+
+### Finding Your PC's IP Address
+
+**macOS/Linux:**
+```bash
+# Open Terminal and run:
+ifconfig | grep "inet " | grep -v 127.0.0.1
+# or
+ip addr show
+```
+
+**Windows:**
+```cmd
+# Open Command Prompt and run:
+ipconfig
+# Look for "IPv4 Address" under your active network adapter
+```
+
+The IP address will typically look like `192.168.1.XXX` or `10.0.0.XXX`.
+
+### 📱 iOS Configuration
+
+1. On your iPhone/iPad, go to **Settings** → **Wi-Fi**
+2. Tap the **(i)** icon next to your connected Wi-Fi network
+3. Scroll down to **"HTTP Proxy"** section
+4. Select **"Manual"**
+5. Enter your PC's IP address in **"Server"** field (e.g., `192.168.1.100`)
+6. Enter **"8080"** in the **"Port"** field
+7. Leave **"Authentication"** off (unless you've configured it)
+8. Tap **"Save"** in the top right
+
+**Note:** Your iOS device will now route all internet traffic through your PC's VPN connection. To disable, go back to Wi-Fi settings and set HTTP Proxy to "Off".
+
+### 🤖 Android Configuration
+
+1. On your Android device, go to **Settings** → **Wi-Fi**
+2. Long-press on your connected Wi-Fi network
+3. Select **"Modify network"** or **"Network details"**
+4. Tap **"Advanced options"** or expand the advanced settings
+5. Under **"Proxy"**, select **"Manual"**
+6. Enter your PC's IP address in **"Proxy hostname"** (e.g., `192.168.1.100`)
+7. Enter **"8080"** in **"Proxy port"**
+8. Leave **"Bypass proxy for"** empty (or add local addresses like `localhost,127.0.0.1`)
+9. Tap **"Save"**
+
+**Note:** Some Android versions may have slightly different menu paths. If you can't find these options, try: **Settings** → **Network & Internet** → **Wi-Fi** → (tap network) → **Advanced** → **Proxy**.
+
+**To disable:** Go back to Wi-Fi settings, modify the network, and set Proxy back to "None".
+
+### ⚠️ Important Notes
+
+- Make sure your PC's firewall allows incoming connections on port 8080
+- The proxy only works while both devices are on the same network
+- If your PC's IP address changes, you'll need to update the proxy settings on your mobile device
+- Some apps may bypass system proxy settings - you may need to configure them individually
 
 ---
 

@@ -766,7 +766,7 @@
                     </svg>
                 </a>
                 <button class="help-btn" onclick="showHelp()" title="Help & About">?</button>
-                <h1>🔒 SlipStream GUI <span class="version-badge" id="versionBadge">v1.0.0</span></h1>
+                <h1>🔒 SlipStream GUI <span class="version-badge" id="versionBadge">v1.0.2</span></h1>
                 <p>Secure your connection</p>
             </div>
 
@@ -1023,8 +1023,63 @@ SlipStream VPN Server</pre>
             </div>
 
             <div class="modal-section">
+                <h3>Sharing PC Internet via Mobile (Same Network)</h3>
+                <p>If your PC and mobile device are on the same Wi-Fi network, you can configure your mobile device to use your PC's internet connection (including the VPN) through the proxy.</p>
+                
+                <p><strong>Prerequisites:</strong></p>
+                <ul>
+                    <li>PC and mobile device must be connected to the same Wi-Fi network</li>
+                    <li>SlipStream GUI must be running with VPN started</li>
+                    <li>Find your PC's local IP address (see instructions below)</li>
+                </ul>
+
+                <p><strong>Finding Your PC's IP Address:</strong></p>
+                <ul>
+                    <li><strong>macOS/Linux:</strong> Open Terminal and run <code>ifconfig | grep "inet " | grep -v 127.0.0.1</code> or <code>ip addr show</code></li>
+                    <li><strong>Windows:</strong> Open Command Prompt and run <code>ipconfig</code>, look for "IPv4 Address" under your active network adapter</li>
+                    <li>It will typically look like <code>192.168.1.XXX</code> or <code>10.0.0.XXX</code></li>
+                </ul>
+
+                <h4>📱 iOS Configuration</h4>
+                <ol>
+                    <li>On your iPhone/iPad, go to <strong>Settings</strong> → <strong>Wi-Fi</strong></li>
+                    <li>Tap the <strong>(i)</strong> icon next to your connected Wi-Fi network</li>
+                    <li>Scroll down to <strong>"HTTP Proxy"</strong> section</li>
+                    <li>Select <strong>"Manual"</strong></li>
+                    <li>Enter your PC's IP address in <strong>"Server"</strong> field (e.g., <code>192.168.1.100</code>)</li>
+                    <li>Enter <strong>"8080"</strong> in the <strong>"Port"</strong> field</li>
+                    <li>Leave <strong>"Authentication"</strong> off (unless you've configured it)</li>
+                    <li>Tap <strong>"Save"</strong> in the top right</li>
+                </ol>
+                <p><strong>Note:</strong> Your iOS device will now route all internet traffic through your PC's VPN connection. To disable, go back to Wi-Fi settings and set HTTP Proxy to "Off".</p>
+
+                <h4>🤖 Android Configuration</h4>
+                <ol>
+                    <li>On your Android device, go to <strong>Settings</strong> → <strong>Wi-Fi</strong></li>
+                    <li>Long-press on your connected Wi-Fi network</li>
+                    <li>Select <strong>"Modify network"</strong> or <strong>"Network details"</strong></li>
+                    <li>Tap <strong>"Advanced options"</strong> or expand the advanced settings</li>
+                    <li>Under <strong>"Proxy"</strong>, select <strong>"Manual"</strong></li>
+                    <li>Enter your PC's IP address in <strong>"Proxy hostname"</strong> (e.g., <code>192.168.1.100</code>)</li>
+                    <li>Enter <strong>"8080"</strong> in <strong>"Proxy port"</strong></li>
+                    <li>Leave <strong>"Bypass proxy for"</strong> empty (or add local addresses like <code>localhost,127.0.0.1</code>)</li>
+                    <li>Tap <strong>"Save"</strong></li>
+                </ol>
+                <p><strong>Note:</strong> Some Android versions may have slightly different menu paths. If you can't find these options, try: <strong>Settings</strong> → <strong>Network & Internet</strong> → <strong>Wi-Fi</strong> → (tap network) → <strong>Advanced</strong> → <strong>Proxy</strong>.</p>
+                <p><strong>To disable:</strong> Go back to Wi-Fi settings, modify the network, and set Proxy back to "None".</p>
+
+                <p><strong>⚠️ Important:</strong></p>
+                <ul>
+                    <li>Make sure your PC's firewall allows incoming connections on port 8080</li>
+                    <li>The proxy only works while both devices are on the same network</li>
+                    <li>If your PC's IP address changes, you'll need to update the proxy settings on your mobile device</li>
+                    <li>Some apps may bypass system proxy settings - you may need to configure them individually</li>
+                </ul>
+            </div>
+
+            <div class="modal-section">
                 <h3>Version</h3>
-                <p>SlipStream GUI v1.0.0</p>
+                <p>SlipStream GUI v1.0.2</p>
             </div>
         </div>
     </div>
