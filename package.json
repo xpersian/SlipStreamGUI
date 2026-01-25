@@ -21,7 +21,10 @@
     "proxy",
     "slipstream"
   ],
-  "author": "SlipStream GUI Contributors",
+  "author": {
+    "name": "SlipStream GUI Contributors",
+    "email": "noreply@github.com"
+  },
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -94,6 +97,7 @@
       ],
       "category": "Network",
       "icon": "assets/icon.png",
+      "maintainer": "SlipStream GUI Contributors <noreply@github.com>",
       "extraResources": [
         {
           "from": "slipstream-client-linux",
