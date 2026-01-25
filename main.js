@@ -1118,19 +1118,69 @@ ipcMain.handle('check-update', async () => {
   }
 });
 
-// Simple version comparison function
+// SemVer-ish comparison that safely handles prerelease strings like "1.0.52-beta".
+// Returns: 1 if v1 > v2, -1 if v1 < v2, 0 if equal.
 function compareVersions(v1, v2) {
-  const parts1 = v1.split('.').map(Number);
-  const parts2 = v2.split('.').map(Number);
-  
-  for (let i = 0; i < Math.max(parts1.length, parts2.length); i++) {
-    const part1 = parts1[i] || 0;
-    const part2 = parts2[i] || 0;
-    
-    if (part1 > part2) return 1;
-    if (part1 < part2) return -1;
+  function normalize(v) {
+    const raw = String(v || '').trim().replace(/^v/i, '');
+    // Drop build metadata
+    const noBuild = raw.split('+')[0];
+    const [core, prereleaseRaw] = noBuild.split('-', 2);
+    const nums = core
+      .split('.')
+      .slice(0, 3)
+      .map((p) => {
+        // Take numeric prefix (e.g. "52-beta" -> 52). NaN becomes 0.
+        const m = String(p || '').match(/^(\d+)/);
+        return m ? Number(m[1]) : 0;
+      });
+    while (nums.length < 3) nums.push(0);
+    const prerelease = prereleaseRaw ? prereleaseRaw.split('.').filter(Boolean) : null;
+    return { nums, prerelease };
   }
-  
+
+  function compareIdentifiers(a, b) {
+    const an = /^\d+$/.test(a);
+    const bn = /^\d+$/.test(b);
+    if (an && bn) {
+      const ai = Number(a);
+      const bi = Number(b);
+      if (ai > bi) return 1;
+      if (ai < bi) return -1;
+      return 0;
+    }
+    // Numeric identifiers have lower precedence than non-numeric
+    if (an && !bn) return -1;
+    if (!an && bn) return 1;
+    // Both non-numeric: lexicographic
+    if (a > b) return 1;
+    if (a < b) return -1;
+    return 0;
+  }
+
+  const A = normalize(v1);
+  const B = normalize(v2);
+
+  for (let i = 0; i < 3; i++) {
+    if (A.nums[i] > B.nums[i]) return 1;
+    if (A.nums[i] < B.nums[i]) return -1;
+  }
+
+  // If core is equal: release > prerelease
+  if (!A.prerelease && !B.prerelease) return 0;
+  if (!A.prerelease && B.prerelease) return 1;
+  if (A.prerelease && !B.prerelease) return -1;
+
+  // Both prerelease: compare identifiers
+  const len = Math.max(A.prerelease.length, B.prerelease.length);
+  for (let i = 0; i < len; i++) {
+    const ai = A.prerelease[i];
+    const bi = B.prerelease[i];
+    if (ai === undefined) return -1; // shorter prerelease has lower precedence
+    if (bi === undefined) return 1;
+    const c = compareIdentifiers(ai, bi);
+    if (c !== 0) return c;
+  }
   return 0;
 }
 
