@@ -290,9 +290,13 @@ function startSlipstreamClient(resolver, domain) {
   });
 
   slipstreamProcess.stderr.on('data', (data) => {
-    const errorStr = data.toString();
+    let errorStr = data.toString();
+    // Strip ANSI escape codes so UI and logs are readable (issue #10)
+    errorStr = errorStr.replace(/\x1b\[[0-9;]*m/g, '').trim();
+    if (!errorStr) return;
+
     console.error(`Slipstream Error: ${errorStr}`);
-    
+
     // Check for port already in use error
     if (errorStr.includes('Address already in use') || errorStr.includes('EADDRINUSE')) {
       console.warn('Port 5201 is already in use. Trying to kill existing process...');
@@ -304,8 +308,16 @@ function startSlipstreamClient(resolver, domain) {
         }
       });
     }
-    
-    safeSend('slipstream-error', errorStr);
+
+    // Path/resolver unavailable + reconnecting are expected recovery; show as log not error (issue #10)
+    const isResolverPathWarning =
+      (errorStr.includes('Path for resolver') && errorStr.includes('became unavailable')) ||
+      (errorStr.includes('Connection closed') && errorStr.includes('reconnecting'));
+    if (isResolverPathWarning) {
+      safeSend('slipstream-log', errorStr);
+    } else {
+      safeSend('slipstream-error', errorStr);
+    }
     sendStatusUpdate();
   });
 
